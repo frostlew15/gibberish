@@ -153,7 +153,17 @@
             <p class="player-label" id="playerModeLabel">NEXUS RIFT PLAYER</p>
             <h3 id="playerDisplayName">Neon Player</h3>
           </div>
-          <span class="rank-badge">ROOKIE</span>
+          <label class="sr-only" for="playerRank">Player rank</label>
+          <select class="rank-badge" id="playerRank" aria-label="Player rank">
+            <option>Rookie</option>
+            <option>Bronze</option>
+            <option>Silver</option>
+            <option>Gold</option>
+            <option>Platinum</option>
+            <option>Diamond</option>
+            <option>Master</option>
+            <option>Legend</option>
+          </select>
         </div>
         <label class="player-name-label" for="playerName">Player name</label>
         <div class="player-name-row">
@@ -172,7 +182,7 @@
           </div>
         </div>
         <p class="qr-note" id="qrNote">Publish this site to let friends open your QR code on other devices.</p>
-        <p class="profile-backend-note">Profiles are saved on this device. Shared accounts and real-time multiplayer need a hosted game server.</p>
+        <p class="profile-backend-note">Choose your displayed rank; game-based rank progression is not enabled yet. Profiles are saved on this device.</p>
       </div>
     </section>
 

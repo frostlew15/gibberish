@@ -242,15 +242,20 @@ function createPlayerId() {
 }
 
 const playerNameInput = document.getElementById("playerName");
+const playerRankSelect = document.getElementById("playerRank");
 const playerDisplayName = document.getElementById("playerDisplayName");
 const playerIdElement = document.getElementById("playerId");
+const playerRanks = ["Rookie", "Bronze", "Silver", "Gold", "Platinum", "Diamond", "Master", "Legend"];
 const sharedProfile = new URLSearchParams(window.location.hash.slice(1));
 const sharedPlayerId = sharedProfile.get("player");
 const isSharedProfile = /^RIFT-[A-F0-9]{12}$/.test(sharedPlayerId || "");
 let playerId = isSharedProfile ? sharedPlayerId : "";
 if (isSharedProfile) {
   playerNameInput.value = (sharedProfile.get("name") || "Neon Player").slice(0, 20);
+  const sharedRank = sharedProfile.get("rank");
+  if (playerRanks.includes(sharedRank)) playerRankSelect.value = sharedRank;
   playerNameInput.disabled = true;
+  playerRankSelect.disabled = true;
   document.getElementById("savePlayer").disabled = true;
   document.getElementById("savePlayer").textContent = "Viewing";
   document.getElementById("playerModeLabel").textContent = "SHARED RIFT PLAYER";
@@ -259,6 +264,8 @@ if (isSharedProfile) {
     playerId = localStorage.getItem("nexus-rift-player-id") || createPlayerId();
     localStorage.setItem("nexus-rift-player-id", playerId);
     playerNameInput.value = localStorage.getItem("nexus-rift-player-name") || playerNameInput.value;
+    const savedRank = localStorage.getItem("nexus-rift-player-rank");
+    if (playerRanks.includes(savedRank)) playerRankSelect.value = savedRank;
   } catch (error) {
     playerId = createPlayerId();
     console.error("Could not load the saved player profile.", error);
@@ -270,7 +277,8 @@ function profileUrl() {
   const url = new URL(window.location.href);
   url.hash = new URLSearchParams({
     player: playerId,
-    name: playerNameInput.value.trim() || "Neon Player"
+    name: playerNameInput.value.trim() || "Neon Player",
+    rank: playerRankSelect.value
   }).toString();
   return url.href;
 }
@@ -311,6 +319,18 @@ document.getElementById("savePlayer").addEventListener("click", () => {
   }
   renderPlayerProfile();
   showToast("Player profile updated", "Your RIFT ID is ready to share.");
+});
+
+playerRankSelect.addEventListener("change", () => {
+  if (isSharedProfile) return;
+  try {
+    localStorage.setItem("nexus-rift-player-rank", playerRankSelect.value);
+  } catch (error) {
+    console.error("Could not save the player rank.", error);
+    showToast("Rank not saved", "Browser storage is unavailable on this device.");
+  }
+  renderPlayerProfile();
+  showToast("Rank updated", "Your selected rank is on your player card.");
 });
 
 document.getElementById("copyPlayerLink").addEventListener("click", async () => {
